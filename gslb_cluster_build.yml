@@ -51,6 +51,14 @@
       group: root
       mode: '0640'
 
+  - name: deploy odnsup config
+    copy:
+      src: /srv/odnsup.cfg
+      dest: /etc/
+      owner: root
+      group: root
+      mode: '0640'
+
   - name: start named
     systemd:
       state: started
