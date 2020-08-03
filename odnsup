@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+
+sanitize () {
+  head -n1 | awk '{print $1}'
+}
+
+NSHOST=$(hostname) # set your hostname to the dns name of the nameserver so this will work, or use the hosts file
+
+IPSEDME=$(grep IPSEDME /etc/odnsup.cfg | sanitize )
+NSHOSTNAMESEDME=$(grep NSHOSTNAMESEDME /etc/odnsup.cfg | sanitize )
+MXHOSTSEDME=$(grep MXHOSTSEDME /etc/odnsup.cfg | sanitize )
+MXSEDME=$(grep MXSEDME /etc/odnsup.cfg | sanitize )
+REVIPSEDME=$(grep REVIPSEDME /etc/odnsup.cfg | sanitize )
+MXREVIPSEDME=$(grep MXREVIPSEDME /etc/odnsup.cfg | sanitize )
+NSADDRSEDME=$(grep NSADDRSEDME /etc/odnsup.cfg | sanitize )
+template=$(grep template /etc/odnsup.cfg | sanitize )
+
+initsed () {
+  # sed the template files
+}
+
+initbuild () {
+  # copy the needed files around
+}
+
+sysset () {
+  cp /lib/systemd/system/named.service /etc/systemd/system/
+  systemctl daemon-reload
+  systemctl restart named.service
+}
+
+initsed || exit 1
+initbuild || exit 1
+
+sysset || logger "setup for intelligent DNS failed $?"
