@@ -1,0 +1,18 @@
+$TTL 30s
+@       IN      SOA     REVIPSEDME      carefuldata.protonmail.com. (
+        1       ; serial
+        6h      ; refresh after 6 hours
+        1h      ; retry after 1 hour
+        1w      ; expire after 1 week
+        30s )   ; minimum TTL of 1 day
+;
+;
+;Name Server Information
+@       IN      NS      NSHOSTNAMESEDME
+ns1     IN      A       NSADDRSEDME
+;
+;
+;Reverse IP Information
+REVIPSEDME.in-addr.arpa.        IN      PTR     template.
+REVIPSEDME.in-addr.arpa.        IN      PTR     www.template.
+MXREVIPSEDME.in-arddr.arpa.     IN      PTR     MXHOSTNAMESEDME
