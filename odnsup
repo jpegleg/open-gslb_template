@@ -8,29 +8,58 @@ sanitize () {
 NSHOST=$(hostname) # set your hostname to the dns name of the nameserver so this will work, or use the hosts file
 
 IPSEDME=$(grep IPSEDME /etc/odnsup.cfg | sanitize )
-NSHOSTNAMESEDME=$(grep NSHOSTNAMESEDME /etc/odnsup.cfg | sanitize )
+NSHOSTNAMESEDME=$NSHOST
 MXHOSTSEDME=$(grep MXHOSTSEDME /etc/odnsup.cfg | sanitize )
 MXSEDME=$(grep MXSEDME /etc/odnsup.cfg | sanitize )
 REVIPSEDME=$(grep REVIPSEDME /etc/odnsup.cfg | sanitize )
 MXREVIPSEDME=$(grep MXREVIPSEDME /etc/odnsup.cfg | sanitize )
-NSADDRSEDME=$(grep NSADDRSEDME /etc/odnsup.cfg | sanitize )
+NSADDRSEDME=$(ip a | grep inet | grep -v "scope host lo\|inet6" | awk '{print $2}' | cut -d'/' -f1)
 template=$(grep template /etc/odnsup.cfg | sanitize )
 
-initsed () {
-  # sed the template files
+initbuild () {
+  cp /var/named/template_forward /var/named/.build.template-forward
+  cp /var/named/template_reverse /var/named/.build.template-reverse
+  cp /var/named/template_forward /var/named/.build.template-forward-secondary
+  cp /var/named/template_reverse /var/named/.build.template-reverse-secondary
 }
 
-initbuild () {
-  # copy the needed files around
+initsed () {
+  sed -i "s/IPSEDME/$IPSEDME/g" /var/named/.build.template-forward
+  sed -i "s/NSHOSTNAMESEDME/$NSHOSTNAMESEDME/g" /var/named/.build.template-reverse
+  
+  sed -i "s/NSHOSTNAMESEDME/$NSHOSTNAMESEDME/g" /var/named/.build.template-forward
+  sed -i "s/NSHOSTNAMESEDME/$NSHOSTNAMESEDME/g" /var/named/.build.template-reverse
+  
+  sed -i "s/MXHOSTSEDME/$MXHOSTSEDME/g" /var/named/.build.template-forward
+  sed -i "s/MXHOSTSEDME/$MXHOSTSEDME/g" /var/named/.build.template-reverse
+ 
+  sed -i "s/MXSEDME/$MXSEDME/g" /var/named/.build.template-forward
+  sed -i "s/MXSEDME/$MXSEDME/g" /var/named/.build.template-reverse
+ 
+  sed -i "s/REVIPSEDME/$REVIPSEDME/g" /var/named/.build.template-forward
+  sed -i "s/REVIPSEDME/$REVIPSEDME/g" /var/named/.build.template-reverse
+ 
+  sed -i "s/MXREVIPSEDME/$MXREVIPSEDME/g" /var/named/.build.template-forward
+  sed -i "s/MXREVIPSEDME/$MXREVIPSEDME/g" /var/named/.build.template-reverse
+ 
+  sed -i "s/NSADDRSEDME/$NSADDRSEDME/g" /var/named/.build.template-forward
+  sed -i "s/NSADDRSEDME/$NSADDRSEDME/g" /var/named/.build.template-reverse
+ 
+  sed -i "s/template/$template/g" /var/named/.build.template-forward
+  sed -i "s/template/$template/g" /var/named/.build.template-reverse
 }
 
 sysset () {
+  cp /var/named/.build.template-forward /var/named/forward.$template
+  cp /var/named/.build.template-reverse /var/named/reverse.$template
+  cp /var/named/.build.template-forward /var/named/backup.forward.$template
+  cp /var/named/.build.template-reverse /var/named/backup.reverse.$template
   cp /lib/systemd/system/named.service /etc/systemd/system/
   systemctl daemon-reload
   systemctl restart named.service
 }
 
-initsed || exit 1
 initbuild || exit 1
+initsed || exit 1
 
 sysset || logger "setup for intelligent DNS failed $?"
