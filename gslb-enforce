@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if pgrep -x "open-glsb-bin" >/dev/null
+then
+        exit 0
+else
+        /usr/local/sbin/open-glsb-bin
+fi
