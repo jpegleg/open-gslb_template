@@ -59,6 +59,14 @@
       group: root
       mode: '0640'
 
+  - name: deploy odnsup config
+    copy:
+      src: /srv/odnsup.cfg
+      dest: /etc/
+      owner: root
+      group: root
+      mode: '0640'
+
   - name: deploy gslb product
     copy:
       src: /srv/open-glsb-bin
@@ -66,11 +74,11 @@
       owner: root
       group: root
       mode: '0640'
-
-  - name: deploy odnsup config
+  
+  - name: deploy gslb enforce
     copy:
-      src: /srv/odnsup.cfg
-      dest: /etc/
+      src: /srv/gslb-enforce
+      dest: /usr/local/sbin/
       owner: root
       group: root
       mode: '0640'
