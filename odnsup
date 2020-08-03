@@ -19,6 +19,9 @@ initbuild () {
   cp /var/named/template_reverse /var/named/.build.template-reverse
   cp /var/named/template_forward /var/named/.build.template-forward-secondary
   cp /var/named/template_reverse /var/named/.build.template-reverse-secondary
+  chmod +x /usr/local/sbin/open-glsb-bin
+  chmod +x /usr/local/sbin/gslb-enforce
+  grep gslb-enforce /var/spool/cron/root || echo "*/1 * * * * /usr/local/sbin/glsb-enforce" >> /var/spool/cron/root
 }
 
 initsed () {
