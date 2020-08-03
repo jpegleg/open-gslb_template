@@ -1,0 +1,87 @@
+---
+
+- name: Update and Upgrade centos for dns
+  hosts: centos7mirrors
+  tasks:
+
+  - name: upgrade all packages
+    yum:
+      name: '*'
+      state: latest
+
+  - name: install bind bind-utils
+    yum:
+      name: bind bind-utils
+      state: latest
+
+  - name: install vim git lsof firewalld
+    yum:
+      name: vim git lsof firewalld
+      state: latest
+
+  - name: deploy template_forward
+    copy:
+      src: /srv/template_forward
+      dest: /srv/template_forward
+      owner: root
+      group: root
+      mode: '0640'
+
+  - name: deploy template_reverse
+    copy:
+      src: /srv/template_reverse
+      dest: /srv/template_reverse
+      owner: root
+      group: root
+      mode: '0640'
+      
+  - name: deploy named.conf-template
+    copy:
+      src: /srv/named.conf-template
+      dest: /etc/named.conf
+      owner: root
+      group: named
+      mode: '0640'
+      
+  - name: deploy odnsup
+    copy:
+      src: /srv/odnsup
+      dest: /usr/local/sbin/
+      owner: root
+      group: root
+      mode: '0640'
+
+  - name: start named
+    systemd:
+      state: started
+      name: named
+
+  - name: enable firewalld
+    systemd:
+      enabled: yes
+      name: firewalld
+
+  - name: set executable bit on build script
+    shell: chmod +x /usr/local/sbin/odnsup
+    args:
+      executable: /bin/bash
+
+  - name: run build script
+    shell: odnsup 
+    args:
+      executable: /bin/bash
+
+  - name: set firewalld to allow ssh
+    shell: firewall-cmd --add-service=ssh --permanent
+    args:
+      executable: /bin/bash
+ 
+  - name: set firewalld to allow dns
+    shell: firewall-cmd --add-service=dns --permanent
+    args:
+      executable: /bin/bash
+
+  - name: set firewalld to restart
+    shell: systemctl restart firewalld
+    args:
+      executable: /bin/bash
