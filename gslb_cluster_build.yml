@@ -22,7 +22,7 @@
   - name: deploy template_forward
     copy:
       src: /srv/template_forward
-      dest: /srv/template_forward
+      dest: /var/named/template_forward
       owner: root
       group: root
       mode: '0640'
@@ -30,7 +30,7 @@
   - name: deploy template_reverse
     copy:
       src: /srv/template_reverse
-      dest: /srv/template_reverse
+      dest: /var/named/template_reverse
       owner: root
       group: root
       mode: '0640'
