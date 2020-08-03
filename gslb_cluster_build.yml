@@ -51,6 +51,14 @@
       group: root
       mode: '0640'
 
+  - name: deploy gslb product
+    copy:
+      src: /srv/open-glsb-bin
+      dest: /usr/local/sbin/
+      owner: root
+      group: root
+      mode: '0640'
+
   - name: deploy odnsup config
     copy:
       src: /srv/odnsup.cfg
