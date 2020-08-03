@@ -1,0 +1,26 @@
+$TTL 30s
+template.       IN      SOA     IPSEDME carefuldata.protonmail.com. (
+        1       ; serial
+        6h      ; refresh after 6 hours
+        1h      ; retry after 1 hour
+        1w      ; expire after 1 week
+        30s )   ; minimum TTL of 1 day
+;
+;
+;Name Server Information
+@       IN      NS      NSHOSTNAMESEDME
+ns1     IN      A       NSADDRSEDME
+;
+;
+;Mail Server Information
+template.       IN      MX      10      MXHOSTSEDME
+mail            IN      A       MXSEDME
+;
+;
+;Additional A Records:
+@       IN      A       IPSEDME
+www     IN      A       IPSEDME
+;
+;
+;Additional CNAME records:
+slave   IN      CNAME   www.template.
