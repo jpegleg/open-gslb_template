@@ -43,6 +43,14 @@
       group: named
       mode: '0640'
       
+  - name: deploy named.service
+    copy:
+      src: /srv/named.service
+      dest: /lib/systemd/system/named.service
+      owner: root
+      group: root
+      mode: '0644'
+            
   - name: deploy odnsup
     copy:
       src: /srv/odnsup
