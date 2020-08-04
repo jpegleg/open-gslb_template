@@ -14,9 +14,9 @@
       name: bind bind-utils
       state: latest
 
-  - name: install vim git lsof firewalld
+  - name: install vim git lsof firewalld nc
     yum:
-      name: vim git lsof firewalld
+      name: vim git lsof firewalld nc
       state: latest
 
   - name: deploy template_forward
