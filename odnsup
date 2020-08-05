@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+sanitize () {
+  head -n1 | awk '{print $1}'
+}
+
 export NSHOST=$(hostname) # set your hostname to the dns name of the nameserver so this will work, or use the hosts file
 export IPSEDME=$(grep IPSEDME /etc/odnsup.cfg | sanitize )
 export NSHOSTNAMESEDME=$NSHOST
@@ -10,15 +14,11 @@ export MXREVIPSEDME=$(grep MXREVIPSEDME /etc/odnsup.cfg | sanitize )
 export NSADDRSEDME=$(ip a | grep inet | grep -v "scope host lo\|inet6" | awk '{print $2}' | cut -d'/' -f1)
 export template=$(grep template /etc/odnsup.cfg | sanitize )
 
-sanitize () {
-  head -n1 | awk '{print $1}'
-}
-
 initbuild () {
-  cp /var/named/template_forward /var/named/.build.template-forward
-  cp /var/named/template_reverse /var/named/.build.template-reverse
-  cp /var/named/template_forward /var/named/.build.template-forward-secondary
-  cp /var/named/template_reverse /var/named/.build.template-reverse-secondary
+  cp /var/named/forward_template /var/named/.build.template-forward
+  cp /var/named/reverse_template /var/named/.build.template-reverse
+  cp /var/named/forward_template /var/named/.build.template-forward-secondary
+  cp /var/named/reverse_template /var/named/.build.template-reverse-secondary
   chmod +x /usr/local/sbin/open-glsb-bin
   chmod +x /usr/local/sbin/gslb-enforce
   grep gslb-enforce /var/spool/cron/root || echo "*/1 * * * * /usr/local/sbin/glsb-enforce" >> /var/spool/cron/root
